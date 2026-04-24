@@ -1,4 +1,4 @@
-figma.showUI(__html__, { width: 380, height: 560, title: "Frames to Video" });
+figma.showUI(__html__, { width: 380, height: 620, title: "Story to Video" });
 
 function sendSelection() {
   const frames = figma.currentPage.selection.filter(n =>
@@ -55,6 +55,32 @@ figma.ui.onmessage = async (msg) => {
     }
   }
 
+  if (msg.type === 'insert-gif') {
+    try {
+      const { bytes, width, height } = msg;
+      const uint8 = new Uint8Array(bytes);
+      const image = figma.createImage(uint8);
+      const fill  = { type: 'IMAGE', imageHash: image.hash, scaleMode: 'FILL' };
+
+      const frame = figma.createFrame();
+      frame.resize(width, height);
+      frame.name = 'Story GIF';
+      frame.fills = [fill];
+
+      const center = figma.viewport.center;
+      frame.x = center.x - width  / 2;
+      frame.y = center.y - height / 2;
+
+      figma.currentPage.appendChild(frame);
+      figma.currentPage.selection = [frame];
+      figma.viewport.scrollAndZoomIntoView([frame]);
+
+      figma.ui.postMessage({ type: 'done' });
+    } catch (err) {
+      figma.ui.postMessage({ type: 'error', message: err.message || String(err) });
+    }
+  }
+
   if (msg.type === 'insert-video') {
     try {
       const { bytes, width, height } = msg;
@@ -71,7 +97,7 @@ figma.ui.onmessage = async (msg) => {
 
       const frame = figma.createFrame();
       frame.resize(width, height);
-      frame.name = 'Frames Video';
+      frame.name = 'Story Video';
       frame.fills = [fill];
 
       const center = figma.viewport.center;

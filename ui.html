@@ -25,7 +25,6 @@
   h1 { font-size: 18px; font-weight: 400; letter-spacing: 0.1px; }
   .subtitle { font-size: 9px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
 
-  /* ── Section labels ── */
   .section-header {
     display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 6px;
@@ -36,7 +35,6 @@
     background: rgba(90,138,255,0.12); padding: 2px 6px; border-radius: 8px;
   }
 
-  /* ── Frames list ── */
   #frames-list {
     display: flex; flex-direction: column; gap: 3px;
     max-height: 196px; overflow-y: auto;
@@ -75,7 +73,6 @@
   .btn-reorder:hover:not(:disabled) { color: var(--text); border-color: var(--muted); }
   .btn-reorder:disabled { opacity: 0.25; cursor: default; }
 
-  /* ── Empty state ── */
   #empty-state {
     background: var(--surface); border: 1.5px dashed var(--border);
     border-radius: var(--radius); padding: 24px 16px; text-align: center;
@@ -84,7 +81,6 @@
   .empty-text { font-size: 11px; color: var(--muted); line-height: 1.6; }
   .empty-text b { color: var(--text); font-weight: 600; }
 
-  /* ── FPS selector ── */
   #fps-buttons {
     display: flex; gap: 4px; flex-wrap: wrap;
   }
@@ -101,6 +97,72 @@
     background: var(--accent); border-color: var(--accent); color: #fff;
   }
 
+  /* ── Options section ── */
+  .options-grid {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .option-row {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 7px 10px;
+  }
+  .option-label {
+    font-size: 11px; color: var(--muted);
+  }
+
+  /* Loops input */
+  .loops-input {
+    font-family: Helvetica, Arial, sans-serif;
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); font-size: 11px; font-weight: 700;
+    width: 52px; height: 24px; padding: 0 6px;
+    border-radius: var(--radius); text-align: center;
+    -moz-appearance: textfield;
+  }
+  .loops-input::-webkit-inner-spin-button,
+  .loops-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .loops-input:focus { outline: none; border-color: var(--accent); }
+
+  /* Rewind toggle */
+  .toggle-wrap {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .toggle-hint {
+    font-size: 9px; color: var(--muted);
+  }
+  .toggle {
+    position: relative; width: 32px; height: 18px; flex-shrink: 0;
+  }
+  .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+  .toggle-slider {
+    position: absolute; inset: 0;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 10px; cursor: pointer; transition: background 0.15s, border-color 0.15s;
+  }
+  .toggle-slider::before {
+    content: ''; position: absolute;
+    width: 12px; height: 12px; top: 2px; left: 2px;
+    background: var(--muted); border-radius: 50%;
+    transition: transform 0.15s, background 0.15s;
+  }
+  .toggle input:checked + .toggle-slider { background: rgba(90,138,255,0.2); border-color: var(--accent); }
+  .toggle input:checked + .toggle-slider::before { transform: translateX(14px); background: var(--accent); }
+
+  /* Format buttons */
+  .fmt-toggle {
+    display: flex; gap: 3px;
+  }
+  .fmt-btn {
+    font-family: Helvetica, Arial, sans-serif;
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--muted); font-size: 10px; font-weight: 700;
+    height: 24px; padding: 0 10px;
+    border-radius: var(--radius); cursor: pointer;
+    transition: all 0.1s; letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .fmt-btn:hover { color: var(--text); border-color: #555; }
+  .fmt-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
   /* ── Info row ── */
   #info-row {
     display: flex; justify-content: space-between;
@@ -115,12 +177,10 @@
   .progress-bar-bg { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
   .progress-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; width: 0%; transition: width 0.15s; }
 
-  /* ── Status ── */
   #status { font-size: 10px; color: var(--muted); text-align: center; min-height: 14px; }
   #status.ok  { color: var(--accent); }
   #status.err { color: var(--danger); }
 
-  /* ── Buttons ── */
   .btn-row { display: flex; gap: 8px; margin-top: auto; }
   button {
     font-family: Helvetica, Arial, sans-serif; font-size: 11px; font-weight: 700;
@@ -138,7 +198,6 @@
 
   #canvas { display: none; }
 
-  /* Size mismatch warning */
   #size-warning {
     display: none;
     font-size: 9px; color: #e6a23c;
@@ -151,8 +210,8 @@
 <body>
 
 <div>
-  <h1>Frames to Video</h1>
-  <div class="subtitle">select frames & render to canvas</div>
+  <h1>Story to Video</h1>
+  <div class="subtitle">select frames &amp; render to canvas</div>
 </div>
 
 <!-- Frames list -->
@@ -182,6 +241,36 @@
   <div id="fps-buttons"></div>
 </div>
 
+<!-- Options -->
+<div>
+  <div class="section-header">
+    <span class="section-label">Options</span>
+  </div>
+  <div class="options-grid">
+    <div class="option-row">
+      <span class="option-label">Loops</span>
+      <input type="number" id="loops-input" class="loops-input" min="0" max="99" value="0" />
+    </div>
+    <div class="option-row">
+      <span class="option-label">Rewind</span>
+      <div class="toggle-wrap">
+        <span class="toggle-hint" id="rewind-hint">off</span>
+        <label class="toggle">
+          <input type="checkbox" id="rewind-check" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+    <div class="option-row">
+      <span class="option-label">Format</span>
+      <div class="fmt-toggle">
+        <button class="fmt-btn active" data-fmt="mp4">MP4</button>
+        <button class="fmt-btn" data-fmt="gif">GIF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Info -->
 <div id="info-row">
   <span>Duration: <b id="duration-display">—</b></span>
@@ -201,7 +290,7 @@
 <div id="status"></div>
 
 <div class="btn-row">
-  <button id="btn-render" disabled>▶ Render Video</button>
+  <button id="btn-render" disabled>▶ Render MP4</button>
 </div>
 
 <div class="credit">plugin by <a href="https://asierleoz.com" target="_blank">asierleoz.com</a></div>
@@ -225,14 +314,21 @@ const statusEl      = document.getElementById('status');
 const btnRender     = document.getElementById('btn-render');
 const canvas        = document.getElementById('canvas');
 const ctx           = canvas.getContext('2d');
+const loopsInput    = document.getElementById('loops-input');
+const rewindCheck   = document.getElementById('rewind-check');
+const rewindHint    = document.getElementById('rewind-hint');
 
 // ── State ──────────────────────────────────────────────────
-let orderedFrames = [];   // [{ id, name, width, height }]
+let orderedFrames = [];
 let selectedFps   = 5;
+let selectedLoops = 0;
+let selectedRewind = false;
+let selectedFormat = 'mp4'; // 'mp4' | 'gif'
+let pendingFormat  = 'mp4'; // format in-flight, used by done handler
 let isProcessing  = false;
-let resolveExport = null; // resolves when frames-exported arrives
+let resolveExport = null;
 
-// ── Build FPS buttons ──────────────────────────────────────
+// ── FPS buttons ────────────────────────────────────────────
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].forEach(fps => {
   const btn = document.createElement('button');
   btn.className = 'fps-btn' + (fps === selectedFps ? ' active' : '');
@@ -247,7 +343,32 @@ let resolveExport = null; // resolves when frames-exported arrives
   fpsBtns.appendChild(btn);
 });
 
-// ── Selection from plugin ──────────────────────────────────
+// ── Loops ──────────────────────────────────────────────────
+loopsInput.addEventListener('input', () => {
+  const v = parseInt(loopsInput.value, 10);
+  selectedLoops = isNaN(v) || v < 0 ? 0 : Math.min(v, 99);
+  updateInfo();
+});
+
+// ── Rewind ─────────────────────────────────────────────────
+rewindCheck.addEventListener('change', () => {
+  selectedRewind = rewindCheck.checked;
+  rewindHint.textContent = selectedRewind ? 'on' : 'off';
+  updateInfo();
+});
+
+// ── Format ─────────────────────────────────────────────────
+document.querySelectorAll('.fmt-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (isProcessing) return;
+    selectedFormat = btn.dataset.fmt;
+    document.querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    btnRender.textContent = selectedFormat === 'gif' ? '▶ Export GIF' : '▶ Render MP4';
+  });
+});
+
+// ── Messages from plugin ───────────────────────────────────
 window.onmessage = (e) => {
   const msg = e.data.pluginMessage;
   if (!msg) return;
@@ -261,7 +382,7 @@ window.onmessage = (e) => {
   }
 
   if (msg.type === 'export-progress') {
-    const pct = Math.round((msg.done / msg.total) * 50); // first 50% = export
+    const pct = Math.round((msg.done / msg.total) * 50);
     setProgress(pct, `Exporting frames (${msg.done}/${msg.total})...`);
   }
 
@@ -278,7 +399,7 @@ window.onmessage = (e) => {
       progressWrap.classList.remove('visible');
       progressBar.style.width = '0%';
     }, 600);
-    setStatus('✓ Video inserted into Figma', 'ok');
+    setStatus(pendingFormat === 'gif' ? '✓ GIF inserted into Figma' : '✓ Video inserted into Figma', 'ok');
     btnRender.disabled = orderedFrames.length === 0;
     isProcessing = false;
   }
@@ -301,7 +422,6 @@ function renderList() {
   frameCountEl.textContent  = orderedFrames.length + (orderedFrames.length === 1 ? ' frame' : ' frames');
   btnRender.disabled        = !hasFrames;
 
-  // Size mismatch check
   const allSame = orderedFrames.every(f => f.width === orderedFrames[0].width && f.height === orderedFrames[0].height);
   sizeWarning.classList.toggle('visible', hasFrames && !allSame);
 
@@ -320,14 +440,12 @@ function renderList() {
     item.querySelector('.btn-up').addEventListener('click', () => {
       if (isProcessing) return;
       [orderedFrames[i - 1], orderedFrames[i]] = [orderedFrames[i], orderedFrames[i - 1]];
-      renderList();
-      updateInfo();
+      renderList(); updateInfo();
     });
     item.querySelector('.btn-dn').addEventListener('click', () => {
       if (isProcessing) return;
       [orderedFrames[i + 1], orderedFrames[i]] = [orderedFrames[i], orderedFrames[i + 1]];
-      renderList();
-      updateInfo();
+      renderList(); updateInfo();
     });
     framesList.appendChild(item);
   });
@@ -338,6 +456,13 @@ function escHtml(s) {
 }
 
 // ── Info row ───────────────────────────────────────────────
+function getTotalFrameCount() {
+  if (orderedFrames.length === 0) return 0;
+  const n = orderedFrames.length;
+  const baseLen = selectedRewind && n > 1 ? 2 * n - 1 : n;
+  return baseLen * (selectedLoops + 1);
+}
+
 function updateInfo() {
   if (orderedFrames.length === 0) {
     durationEl.textContent = '—';
@@ -345,11 +470,28 @@ function updateInfo() {
     framesEl.textContent   = '—';
     return;
   }
-  const dur = (orderedFrames.length / selectedFps).toFixed(2);
+  const total = getTotalFrameCount();
+  const dur = (total / selectedFps).toFixed(2);
   const { width, height } = orderedFrames[0];
   durationEl.textContent = dur + 's';
   sizeEl.textContent     = width + '×' + height;
-  framesEl.textContent   = orderedFrames.length;
+  framesEl.textContent   = total;
+}
+
+// ── Build playback sequence ────────────────────────────────
+// images: array of HTMLImageElement
+function buildPlaybackSequence(images, loops, rewind) {
+  let base;
+  if (rewind && images.length > 1) {
+    // [1,2,3,4] + [3,2,1] = [1,2,3,4,3,2,1]
+    const reversed = images.slice().reverse().slice(1); // skip duplicate at turn
+    base = [...images, ...reversed];
+  } else {
+    base = [...images];
+  }
+  let seq = [...base];
+  for (let i = 0; i < loops; i++) seq = [...seq, ...base];
+  return seq;
 }
 
 // ── Render ─────────────────────────────────────────────────
@@ -362,45 +504,61 @@ btnRender.addEventListener('click', async () => {
   setProgress(5, 'Requesting frame export...');
 
   try {
-    // 1. Ask plugin to export frames
     const frameIds = orderedFrames.map(f => f.id);
     const exportedFrames = await requestExport(frameIds);
 
-    // Re-order exported frames to match orderedFrames order
     const byId = {};
     exportedFrames.forEach(f => { byId[f.id] = f; });
     const sorted = frameIds.map(id => byId[id]).filter(Boolean);
-
     if (sorted.length === 0) throw new Error('No frames could be exported.');
 
     const videoWidth  = sorted[0].width;
     const videoHeight = sorted[0].height;
 
-    // 2. Load images
     setProgress(55, `Loading images (0/${sorted.length})...`);
-    const images = [];
+    const baseImages = [];
     for (let i = 0; i < sorted.length; i++) {
-      images.push(await loadImage(sorted[i].bytes));
-      setProgress(55 + Math.round((i + 1) / sorted.length * 15), `Loading images (${i + 1}/${sorted.length})...`);
+      baseImages.push(await loadImage(sorted[i].bytes));
+      setProgress(55 + Math.round((i + 1) / sorted.length * 10), `Loading images (${i + 1}/${sorted.length})...`);
     }
 
-    // 3. Render video via canvas + MediaRecorder
-    setProgress(70, 'Rendering video...');
-    const videoBlob = await renderToVideo(images, videoWidth, videoHeight, selectedFps, (i, total) => {
-      setProgress(70 + Math.round((i / total) * 20), `Rendering frame (${i}/${total})...`);
-    });
+    // Build full playback sequence applying loops + rewind
+    const playbackImages = buildPlaybackSequence(baseImages, selectedLoops, selectedRewind);
+    pendingFormat = selectedFormat;
 
-    // 4. Send to plugin
-    setProgress(92, 'Sending to Figma...');
-    const ab = await videoBlob.arrayBuffer();
-    parent.postMessage({
-      pluginMessage: {
-        type:   'insert-video',
-        bytes:  Array.from(new Uint8Array(ab)),
-        width:  videoWidth,
-        height: videoHeight,
-      }
-    }, '*');
+    if (selectedFormat === 'gif') {
+      setProgress(65, 'Rendering frames...');
+      const gifBytes = await renderToGIF(playbackImages, videoWidth, videoHeight, selectedFps, (i, total) => {
+        setProgress(65 + Math.round((i / total) * 27), `Encoding GIF frame (${i}/${total})...`);
+      });
+
+      setProgress(93, 'Sending to Figma...');
+      parent.postMessage({
+        pluginMessage: {
+          type:   'insert-gif',
+          bytes:  Array.from(gifBytes),
+          width:  videoWidth,
+          height: videoHeight,
+        }
+      }, '*');
+
+    } else {
+      setProgress(65, 'Rendering video...');
+      const videoBlob = await renderToVideo(playbackImages, videoWidth, videoHeight, selectedFps, (i, total) => {
+        setProgress(65 + Math.round((i / total) * 25), `Rendering frame (${i}/${total})...`);
+      });
+
+      setProgress(92, 'Sending to Figma...');
+      const ab = await videoBlob.arrayBuffer();
+      parent.postMessage({
+        pluginMessage: {
+          type:   'insert-video',
+          bytes:  Array.from(new Uint8Array(ab)),
+          width:  videoWidth,
+          height: videoHeight,
+        }
+      }, '*');
+    }
 
   } catch (err) {
     progressWrap.classList.remove('visible');
@@ -413,22 +571,16 @@ btnRender.addEventListener('click', async () => {
 // ── Request export ─────────────────────────────────────────
 function requestExport(frameIds) {
   return new Promise((resolve, reject) => {
-    resolveExport = resolve;
-    // timeout failsafe
     const t = setTimeout(() => {
       resolveExport = null;
       reject(new Error('Export timed out. Try selecting fewer frames.'));
     }, 60000);
-
-    // Override resolve to also clear timeout
-    const origResolve = resolve;
-    resolveExport = (frames) => { clearTimeout(t); origResolve(frames); };
-
+    resolveExport = (frames) => { clearTimeout(t); resolve(frames); };
     parent.postMessage({ pluginMessage: { type: 'export-frames', frameIds } }, '*');
   });
 }
 
-// ── Load image from Uint8Array / array ─────────────────────
+// ── Load image ─────────────────────────────────────────────
 function loadImage(bytes) {
   return new Promise((resolve, reject) => {
     const blob = new Blob([bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes)], { type: 'image/png' });
@@ -440,9 +592,9 @@ function loadImage(bytes) {
   });
 }
 
-// ── Render frames to video blob ────────────────────────────
+// ── Render frames to video (MP4/WebM) ──────────────────────
 function getSupportedMimeType() {
-  const candidates = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'];
+  const candidates = ['video/mp4;codecs=avc1', 'video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'];
   for (const m of candidates) {
     if (typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m)) return m;
   }
@@ -451,39 +603,24 @@ function getSupportedMimeType() {
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-let prevStream = null; // track the stream across renders so we can stop it
+let prevStream = null;
 
 async function renderToVideo(images, width, height, fps, onProgress) {
   if (typeof MediaRecorder === 'undefined') {
     throw new Error('MediaRecorder is not available in this environment.');
   }
-
-  // Stop any stream left over from a previous render before touching the canvas.
-  // Without this the old stream's tracks stay alive, the canvas sends frames to
-  // two streams simultaneously, and the new recording comes out transparent.
-  if (prevStream) {
-    prevStream.getTracks().forEach(t => t.stop());
-    prevStream = null;
-  }
+  if (prevStream) { prevStream.getTracks().forEach(t => t.stop()); prevStream = null; }
 
   canvas.width  = width;
   canvas.height = height;
-
-  // Pre-draw the first frame BEFORE captureStream so the stream never
-  // captures a transparent canvas (which would make the video transparent).
   ctx.drawImage(images[0], 0, 0, width, height);
 
-  // Capture at 30fps internally so each source frame occupies the correct duration
   const CAPTURE_FPS  = 30;
-  const frameDuration = Math.round(1000 / fps); // ms each source frame is held
-
+  const frameDuration = Math.round(1000 / fps);
   const stream   = canvas.captureStream(CAPTURE_FPS);
   prevStream     = stream;
 
   const mimeType = getSupportedMimeType();
-  // VP8/VP9 use DCT macroblocks — at low bitrates solid-colour areas show
-  // 16×16 block boundaries as subtle darker/lighter rectangles.
-  // ~2 bits per pixel per captured frame is near-lossless for design content.
   const videoBitsPerSecond = Math.min(width * height * CAPTURE_FPS * 2, 50_000_000);
   const recOpts  = mimeType ? { mimeType, videoBitsPerSecond } : {};
   const recorder = new MediaRecorder(stream, recOpts);
@@ -492,8 +629,8 @@ async function renderToVideo(images, width, height, fps, onProgress) {
   recorder.ondataavailable = e => { if (e.data && e.data.size > 0) chunks.push(e.data); };
   const stopped = new Promise(r => { recorder.onstop = r; });
 
-  recorder.start(100); // collect data every 100ms
-  await sleep(50);     // let stream initialise
+  recorder.start(100);
+  await sleep(50);
 
   for (let i = 0; i < images.length; i++) {
     ctx.drawImage(images[i], 0, 0, width, height);
@@ -501,7 +638,7 @@ async function renderToVideo(images, width, height, fps, onProgress) {
     await sleep(frameDuration);
   }
 
-  await sleep(80); // ensure last frame is captured
+  await sleep(80);
   recorder.stop();
   await stopped;
 
@@ -509,6 +646,227 @@ async function renderToVideo(images, width, height, fps, onProgress) {
   prevStream = null;
 
   return new Blob(chunks, { type: recorder.mimeType || 'video/webm' });
+}
+
+// ── GIF Encoder ────────────────────────────────────────────
+
+async function renderToGIF(images, width, height, fps, onProgress) {
+  canvas.width  = width;
+  canvas.height = height;
+
+  const frameDelay = Math.round(100 / fps); // GIF delay in centiseconds (100ths of a second)
+
+  // Collect ImageData for each frame
+  const frameDataArr = [];
+  for (let i = 0; i < images.length; i++) {
+    ctx.drawImage(images[i], 0, 0, width, height);
+    frameDataArr.push(ctx.getImageData(0, 0, width, height));
+    onProgress(i + 1, images.length);
+    // Yield to avoid blocking UI
+    if (i % 5 === 4) await sleep(0);
+  }
+
+  return encodeAnimatedGIF(frameDataArr, width, height, frameDelay);
+}
+
+// Sample pixels from all frames for palette building
+function samplePixels(frameDataArr, maxTotal) {
+  const totalPx = frameDataArr.reduce((s, fd) => s + fd.width * fd.height, 0);
+  const step = Math.max(1, Math.floor(totalPx / maxTotal));
+  const samples = [];
+  let counter = 0;
+  for (const fd of frameDataArr) {
+    const d = fd.data;
+    for (let i = 0; i < d.length; i += 4) {
+      if (counter++ % step === 0) {
+        samples.push([d[i], d[i + 1], d[i + 2]]);
+      }
+    }
+  }
+  return samples;
+}
+
+// Median-cut color quantization
+function medianCut(pixels, maxColors) {
+  if (!pixels.length) return [[0, 0, 0]];
+  let boxes = [pixels];
+
+  while (boxes.length < maxColors) {
+    // Find the box with the most pixels
+    let maxLen = 0, maxIdx = 0;
+    for (let i = 0; i < boxes.length; i++) {
+      if (boxes[i].length > maxLen) { maxLen = boxes[i].length; maxIdx = i; }
+    }
+    if (maxLen <= 1) break;
+
+    const box = boxes[maxIdx];
+    let minR=255,maxR=0,minG=255,maxG=0,minB=255,maxB=0;
+    for (const p of box) {
+      if (p[0]<minR)minR=p[0]; if (p[0]>maxR)maxR=p[0];
+      if (p[1]<minG)minG=p[1]; if (p[1]>maxG)maxG=p[1];
+      if (p[2]<minB)minB=p[2]; if (p[2]>maxB)maxB=p[2];
+    }
+    const rr=maxR-minR, gr=maxG-minG, br=maxB-minB;
+    const ch = rr>=gr && rr>=br ? 0 : gr>=br ? 1 : 2;
+    box.sort((a, b) => a[ch] - b[ch]);
+    const mid = Math.floor(box.length / 2);
+    boxes.splice(maxIdx, 1, box.slice(0, mid), box.slice(mid));
+  }
+
+  return boxes.map(box => {
+    const n = box.length;
+    if (!n) return [0, 0, 0];
+    return [
+      Math.round(box.reduce((s,p) => s+p[0], 0) / n),
+      Math.round(box.reduce((s,p) => s+p[1], 0) / n),
+      Math.round(box.reduce((s,p) => s+p[2], 0) / n),
+    ];
+  });
+}
+
+// Build a function that maps (r,g,b) → nearest palette index, with cache
+function makePaletteMapper(palette) {
+  const cache = new Map();
+  return function(r, g, b) {
+    // Use 6-bit precision for cache key
+    const key = ((r >> 2) << 12) | ((g >> 2) << 6) | (b >> 2);
+    if (cache.has(key)) return cache.get(key);
+    let best = 0, bestD = Infinity;
+    for (let i = 0; i < palette.length; i++) {
+      const dr = r-palette[i][0], dg = g-palette[i][1], db = b-palette[i][2];
+      const d = dr*dr + dg*dg + db*db;
+      if (d < bestD) { bestD = d; best = i; }
+    }
+    cache.set(key, best);
+    return best;
+  };
+}
+
+// LZW encoder for GIF (LSB-first bit packing)
+function lzwEncode(indices, minCodeSize) {
+  const clearCode = 1 << minCodeSize;
+  const eofCode   = clearCode + 1;
+  const MAX_CODE  = 4095;
+
+  const output = [];
+  let bits = 0, bitBuf = 0;
+
+  function emit(code, size) {
+    bitBuf |= code << bits;
+    bits += size;
+    while (bits >= 8) {
+      output.push(bitBuf & 0xff);
+      bitBuf >>= 8;
+      bits -= 8;
+    }
+  }
+
+  let codeSize = minCodeSize + 1;
+  let nextCode = eofCode + 1;
+  const table  = new Map();
+
+  function resetTable() {
+    table.clear();
+    codeSize = minCodeSize + 1;
+    nextCode = eofCode + 1;
+  }
+
+  emit(clearCode, codeSize);
+
+  if (!indices.length) {
+    emit(eofCode, codeSize);
+    if (bits > 0) output.push(bitBuf & 0xff);
+    return output;
+  }
+
+  let prefix = indices[0];
+
+  for (let i = 1; i < indices.length; i++) {
+    const k   = indices[i];
+    const key = prefix * 256 + k;
+
+    if (table.has(key)) {
+      prefix = table.get(key);
+    } else {
+      emit(prefix, codeSize);
+      if (nextCode <= MAX_CODE) {
+        table.set(key, nextCode++);
+        if (nextCode > (1 << codeSize) && codeSize < 12) codeSize++;
+      } else {
+        emit(clearCode, codeSize);
+        resetTable();
+      }
+      prefix = k;
+    }
+  }
+
+  emit(prefix, codeSize);
+  emit(eofCode, codeSize);
+  if (bits > 0) output.push(bitBuf & 0xff);
+  return output;
+}
+
+function encodeAnimatedGIF(frameDataArr, width, height, delayCentisec) {
+  // Build palette from samples
+  const samples = samplePixels(frameDataArr, 30000);
+  const palette = medianCut(samples, 256);
+  // Pad palette to exactly 256 entries
+  while (palette.length < 256) palette.push([0, 0, 0]);
+  const nearest = makePaletteMapper(palette);
+
+  const buf = [];
+  const w16 = v => { buf.push(v & 0xff, (v >> 8) & 0xff); };
+
+  // Header
+  'GIF89a'.split('').forEach(c => buf.push(c.charCodeAt(0)));
+
+  // Logical Screen Descriptor
+  w16(width); w16(height);
+  buf.push(0xf7); // global color table, 256 colors
+  buf.push(0);    // background color index
+  buf.push(0);    // pixel aspect ratio
+
+  // Global Color Table
+  for (const [r, g, b] of palette) buf.push(r, g, b);
+
+  // Netscape loop extension (loop forever)
+  buf.push(0x21, 0xff, 0x0b);
+  'NETSCAPE2.0'.split('').forEach(c => buf.push(c.charCodeAt(0)));
+  buf.push(0x03, 0x01, 0x00, 0x00, 0x00);
+
+  for (const fd of frameDataArr) {
+    const d = fd.data;
+    const indices = new Uint8Array(width * height);
+    for (let i = 0; i < width * height; i++) {
+      indices[i] = nearest(d[i*4], d[i*4+1], d[i*4+2]);
+    }
+
+    // Graphic Control Extension
+    buf.push(0x21, 0xf9, 0x04, 0x00);
+    w16(delayCentisec);
+    buf.push(0x00, 0x00);
+
+    // Image Descriptor
+    buf.push(0x2c);
+    w16(0); w16(0); w16(width); w16(height);
+    buf.push(0x00);
+
+    // Image Data
+    const lzwMin = 8;
+    const compressed = lzwEncode(Array.from(indices), lzwMin);
+    buf.push(lzwMin);
+    for (let o = 0; o < compressed.length; o += 255) {
+      const block = compressed.slice(o, o + 255);
+      buf.push(block.length);
+      for (const b of block) buf.push(b);
+    }
+    buf.push(0x00); // block terminator
+  }
+
+  // Trailer
+  buf.push(0x3b);
+
+  return new Uint8Array(buf);
 }
 
 // ── Helpers ────────────────────────────────────────────────
@@ -523,7 +881,6 @@ function setStatus(msg, type = '') {
   statusEl.className   = type;
 }
 
-// Initial render
 renderList();
 updateInfo();
 </script>
