@@ -1,8 +1,10 @@
 figma.showUI(__html__, { width: 380, height: 620, title: "Story to Video" });
 
+let lastSelectionBounds = null;
+
 function sendSelection() {
   const frames = figma.currentPage.selection.filter(n =>
-    n.type === 'FRAME' || n.type === 'COMPONENT' 
+    n.type === 'FRAME' || n.type === 'COMPONENT'
   );
 
   // Sort by canvas position: left → right, then top → bottom.
@@ -11,6 +13,13 @@ function sendSelection() {
     if (Math.round(a.x) !== Math.round(b.x)) return a.x - b.x;
     return a.y - b.y;
   });
+
+  if (sorted.length > 0) {
+    lastSelectionBounds = {
+      right: Math.max(...sorted.map(f => f.x + f.width)),
+      top:   Math.min(...sorted.map(f => f.y)),
+    };
+  }
 
   figma.ui.postMessage({
     type: 'selection',
@@ -64,16 +73,19 @@ figma.ui.onmessage = async (msg) => {
 
       const frame = figma.createFrame();
       frame.resize(width, height);
-      frame.name = 'Story GIF';
+      frame.name = '▶️';
       frame.fills = [fill];
 
-      const center = figma.viewport.center;
-      frame.x = center.x - width  / 2;
-      frame.y = center.y - height / 2;
+      if (lastSelectionBounds) {
+        frame.x = lastSelectionBounds.right + width;
+        frame.y = lastSelectionBounds.top;
+      } else {
+        const center = figma.viewport.center;
+        frame.x = center.x - width  / 2;
+        frame.y = center.y - height / 2;
+      }
 
       figma.currentPage.appendChild(frame);
-      figma.currentPage.selection = [frame];
-      figma.viewport.scrollAndZoomIntoView([frame]);
 
       figma.ui.postMessage({ type: 'done' });
     } catch (err) {
@@ -97,16 +109,19 @@ figma.ui.onmessage = async (msg) => {
 
       const frame = figma.createFrame();
       frame.resize(width, height);
-      frame.name = 'Story Video';
+      frame.name = '▶️';
       frame.fills = [fill];
 
-      const center = figma.viewport.center;
-      frame.x = center.x - width  / 2;
-      frame.y = center.y - height / 2;
+      if (lastSelectionBounds) {
+        frame.x = lastSelectionBounds.right + width;
+        frame.y = lastSelectionBounds.top;
+      } else {
+        const center = figma.viewport.center;
+        frame.x = center.x - width  / 2;
+        frame.y = center.y - height / 2;
+      }
 
       figma.currentPage.appendChild(frame);
-      figma.currentPage.selection = [frame];
-      figma.viewport.scrollAndZoomIntoView([frame]);
 
       figma.ui.postMessage({ type: 'done' });
     } catch (err) {
